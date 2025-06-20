@@ -1,0 +1,82 @@
+/* --- Styles Globaux --- */
+:root {
+    --primary-color: #192a56;  /* Bleu Nuit */
+    --accent-color: #c0392b;   /* Rouge */
+    --error-color: #e74c3c;    /* Rouge plus clair */
+    --text-color: #333333;      /* Noir doux */
+    --background-color: #f4f4f4;
+    --white-color: #ffffff;
+    --light-grey: #bdc3c7;
+    --success-color: #27ae60;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background-color: var(--background-color); color: var(--text-color); line-height: 1.6; }
+
+/* --- Structure de l'application --- */
+.page-container.active { display: flex; }
+#app-container { height: 100vh; }
+.sidebar { width: 260px; background: var(--primary-color); color: var(--white-color); display: flex; flex-direction: column; flex-shrink: 0; }
+.sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-logo { max-width: 80%; height: auto; border-radius: 5%; }
+.sidebar nav ul { list-style: none; padding-top: 15px; }
+.sidebar nav ul li a { display: block; padding: 15px 20px; color: var(--white-color); text-decoration: none; transition: background-color 0.2s; border-left: 4px solid transparent; }
+.sidebar nav ul li a:hover { background-color: rgba(255,255,255,0.1); }
+.sidebar nav ul li a.active { background-color: rgba(0,0,0,0.2); border-left: 4px solid var(--accent-color); }
+.sidebar-footer { margin-top: auto; padding: 20px; text-align: center; color: var(--light-grey); font-size: 0.8rem; }
+.content { flex-grow: 1; padding: 30px; overflow-y: auto; }
+
+/* --- Pages & Titres --- */
+.page { display: none; }
+.page.active { display: block; }
+h1, h2, h3 { color: var(--primary-color); }
+h1 { margin-bottom: 20px; border-bottom: 2px solid var(--light-grey); padding-bottom: 10px; }
+h2 { margin: 20px 0 10px 0; }
+h3 { margin: 15px 0 10px 0; font-size: 1.1rem; }
+
+/* --- Formulaires --- */
+form { background: var(--white-color); padding: 20px; border-radius: 8px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; border: 1px solid #ddd; }
+.form-group { display: flex; flex-direction: column; gap: 5px; flex-grow: 1; min-width: 150px; }
+.form-group label { font-size: 0.9rem; font-weight: 500; color: #555; }
+.form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid var(--light-grey); border-radius: 4px; font-size: 1rem; }
+form button { padding: 10px 20px; background-color: var(--primary-color); color: var(--white-color); border: none; border-radius: 4px; cursor: pointer; height: 42px; flex-shrink: 0; transition: background-color 0.2s; }
+form button:hover { background-color: #273c75; }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 30px 0; }
+
+/* --- Tableaux de Données --- */
+.data-table { width: 100%; border-collapse: collapse; background: var(--white-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.data-table th, .data-table td { padding: 12px 15px; border: 1px solid #e0e0e0; text-align: left; vertical-align: middle; }
+.data-table thead th { background-color: #f2f2f2; font-weight: bold; }
+.data-table tbody tr:nth-child(even) { background-color: #f9f9f9; }
+.data-table .actions-cell { display: flex; gap: 10px; justify-content: center; }
+.action-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 5px; }
+.edit-btn { color: var(--primary-color); }
+.delete-btn { color: var(--accent-color); }
+
+/* --- Statuts Stock --- */
+.stock-ok { color: var(--success-color); font-weight: bold; }
+.stock-alerte { color: var(--error-color); font-weight: bold; }
+
+/* --- Dashboard KPIs --- */
+.kpi-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+.kpi-card { background: var(--white-color); padding: 20px; border-radius: 8px; border-left: 5px solid var(--primary-color); }
+.kpi-card p { font-size: 2rem; font-weight: bold; color: var(--primary-color); }
+.chart-container { background: var(--white-color); padding: 20px; border-radius: 8px; }
+
+/* --- Interface à Onglets --- */
+.tab-nav { display: flex; border-bottom: 2px solid var(--light-grey); margin-bottom: 20px; }
+.tab-btn { padding: 10px 20px; border: none; background: none; cursor: pointer; font-size: 1rem; color: var(--text-color); border-bottom: 3px solid transparent; }
+.tab-btn.active { color: var(--accent-color); border-bottom-color: var(--accent-color); font-weight: bold; }
+.tab-content { display: none; padding-top: 10px; }
+.tab-content.active { display: block; }
+
+/* --- Fenêtre Modale --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+.modal-overlay.active { display: flex; }
+.modal-content { background: var(--white-color); padding: 30px; border-radius: 8px; width: 90%; max-width: 600px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+#modal-form { display: flex; flex-wrap: wrap; gap: 20px; background: none; padding: 0; border: none; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.modal-actions button { padding: 10px 20px; border-radius: 4px; border: none; cursor: pointer; }
+.modal-actions .btn-secondary { background-color: var(--light-grey); color: var(--text-color); }
+#modal-save { background-color: var(--accent-color); color: var(--white-color); }
+
+.bilan-container { background: var(--white-color); padding: 20px; border-radius: 8px; }

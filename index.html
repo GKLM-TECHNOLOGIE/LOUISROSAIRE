@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOUIS ROSAIRE GESTION COMMERCIALE</title>
+    <!-- Favicon de l'application -->
+    <link rel="icon" href="LOUIS ROSAIRE.jpg" type="image/jpeg">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- APPLICATION PRINCIPALE -->
+    <div id="app-container" class="page-container active">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="LOUIS ROSAIRE.jpg" alt="Logo Louis Rosaire" class="sidebar-logo">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link active" data-page="dashboard">📊 Tableau de bord</a></li>
+                    <li><a href="#" class="nav-link" data-page="achats">🛒 Gestion des Achats</a></li>
+                    <li><a href="#" class="nav-link" data-page="stock">📦 Gestion du Stock</a></li>
+                    <li><a href="#" class="nav-link" data-page="ventes">💰 Ventes & Dépenses</a></li>
+                    <li><a href="#" class="nav-link" data-page="bilans">📈 Bilans et Rapports</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer"><p>© 2025 LOUIS ROSAIRE</p></div>
+        </aside>
+
+        <main class="content">
+            <!-- PAGE : TABLEAU DE BORD -->
+            <section id="dashboard-page" class="page active">
+                <h1>Tableau de bord</h1>
+                <div class="kpi-container">
+                    <div class="kpi-card"><h3>Chiffre d'Affaires (Aujourd'hui)</h3><p id="kpi-ca-jour">0 FCFA</p></div>
+                    <div class="kpi-card"><h3>Dépenses (Mois en cours)</h3><p id="kpi-depenses-mois">0 FCFA</p></div>
+                    <div class="kpi-card"><h3>Produits en Alerte Stock</h3><p id="kpi-stock-alerte">0</p></div>
+                </div>
+                <div class="chart-container"><h3>Évolution du Chiffre d'Affaires (7 derniers jours)</h3><canvas id="ca-chart"></canvas></div>
+            </section>
+
+            <!-- PAGE : GESTION DES ACHATS -->
+            <section id="achats-page" class="page">
+                <h1>Gestion des Achats</h1>
+                <form id="form-achat">
+                    <div class="form-group"><label for="achat-date">Date</label><input type="date" id="achat-date" required></div>
+                    <div class="form-group"><label for="achat-designation">Désignation</label><input type="text" id="achat-designation" placeholder="Nom du produit" required></div>
+                    <div class="form-group"><label for="achat-quantite">Quantité</label><input type="number" id="achat-quantite" placeholder="Qté" min="1" required></div>
+                    <div class="form-group"><label for="achat-cout">Coût Unitaire</label><input type="number" id="achat-cout" placeholder="Coût (FCFA)" step="1" min="0" required></div>
+                    <div class="form-group"><label for="achat-prix-detail">Prix Vente Détail</label><input type="number" id="achat-prix-detail" placeholder="Prix détail (FCFA)" step="1" min="0" required></div>
+                    <div class="form-group"><label for="achat-prix-gros">Prix Vente Gros</label><input type="number" id="achat-prix-gros" placeholder="Prix gros (FCFA)" step="1" min="0" required></div>
+                    <button type="submit">Ajouter l'Achat</button>
+                </form>
+                <hr>
+                <h2>Liste des Achats</h2>
+                <table class="data-table">
+                    <thead><tr><th>Date</th><th>Désignation</th><th>Qté</th><th>Coût U.</th><th>Coût Total</th><th>Actions</th></tr></thead>
+                    <tbody id="achats-list"></tbody>
+                </table>
+            </section>
+
+            <!-- PAGE : GESTION DU STOCK -->
+            <section id="stock-page" class="page">
+                <h1>Gestion du Stock</h1>
+                <nav class="tab-nav">
+                    <button class="tab-btn active" data-tab="stock-list">Liste du Stock</button>
+                    <button class="tab-btn" data-tab="stock-report">Rapport des Mouvements</button>
+                </nav>
+
+                <!-- Onglet Liste du Stock -->
+                <div id="tab-content-stock-list" class="tab-content active">
+                    <p>Ajustez manuellement les quantités en stock ou modifiez les informations d'un produit.</p>
+                    <form id="form-stock-ajustement">
+                        <div class="form-group"><label for="ajust-produit">Produit à ajuster</label><select id="ajust-produit" required><option value="">-- Sélectionner un produit --</option></select></div>
+                        <div class="form-group"><label for="ajust-quantite">Nouvelle quantité totale</label><input type="number" id="ajust-quantite" placeholder="Qté totale" min="0" required></div>
+                        <button type="submit">Ajuster la Quantité</button>
+                    </form>
+                    <hr>
+                    <h2>Liste des Produits en Stock</h2>
+                    <table class="data-table">
+                        <thead><tr><th>Désignation</th><th>Qté Stock</th><th>Seuil Alerte</th><th>Prix Détail</th><th>Prix Gros</th><th>Statut</th><th>Actions</th></tr></thead>
+                        <tbody id="stock-list"></tbody>
+                    </table>
+                </div>
+
+                <!-- Onglet Rapport des Mouvements -->
+                <div id="tab-content-stock-report" class="tab-content">
+                    <p>Ce rapport synthétise les mouvements de stock pour chaque produit.</p>
+                    <table class="data-table">
+                        <thead><tr><th>Désignation</th><th>Quantité Initiale</th><th>Quantité Vendue</th><th>Quantité Restante</th></tr></thead>
+                        <tbody id="etats-stock-list"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PAGE : VENTES & DÉPENSES -->
+            <section id="ventes-page" class="page">
+                <h1>Gestion des Ventes & Dépenses</h1>
+                <nav class="tab-nav">
+                    <button class="tab-btn active" data-tab="vente-stock">Vente de Produits</button>
+                    <button class="tab-btn" data-tab="vente-service">Vente de Services</button>
+                    <button class="tab-btn" data-tab="depense">Dépenses</button>
+                </nav>
+
+                <div id="tab-content-vente-stock" class="tab-content active">
+                    <form id="form-vente-stock">
+                        <div class="form-group"><label for="vente-stock-date">Date</label><input type="date" id="vente-stock-date" required></div>
+                        <div class="form-group"><label for="vente-stock-produit">Produit</label><select id="vente-stock-produit" required><option value="">-- Sélectionner --</option></select></div>
+                        <div class="form-group"><label for="vente-type-prix">Type</label><select id="vente-type-prix" required><option value="detail">Détail</option><option value="gros">Gros</option></select></div>
+                        <div class="form-group"><label for="vente-stock-quantite">Quantité</label><input type="number" id="vente-stock-quantite" placeholder="Qté" min="1" required></div>
+                        <div class="form-group"><label for="vente-stock-prix">Prix U.</label><input type="number" id="vente-stock-prix" placeholder="Prix (FCFA)" step="1" min="0" required></div>
+                        <button type="submit">Enregistrer</button>
+                    </form>
+                    <h3>Historique des ventes de produits</h3>
+                    <table class="data-table">
+                        <thead><tr><th>Date</th><th>Désignation</th><th>Qté</th><th>Prix U.</th><th>Total</th><th>Actions</th></tr></thead>
+                        <tbody id="ventes-stock-list"></tbody>
+                    </table>
+                </div>
+                
+                <div id="tab-content-vente-service" class="tab-content">
+                     <form id="form-vente-service">
+                        <div class="form-group"><label for="vente-service-date">Date</label><input type="date" id="vente-service-date" required></div>
+                        <div class="form-group"><label for="vente-service-designation">Désignation</label><input type="text" id="vente-service-designation" placeholder="Nom du service" required></div>
+                        <div class="form-group"><label for="vente-service-quantite">Quantité</label><input type="number" id="vente-service-quantite" placeholder="Qté" value="1" min="1" required></div>
+                        <div class="form-group"><label for="vente-service-prix-global">Prix Global</label><input type="number" id="vente-service-prix-global" placeholder="Prix (FCFA)" step="1" min="0" required></div>
+                        <button type="submit">Enregistrer</button>
+                    </form>
+                    <h3>Historique des ventes de services</h3>
+                    <table class="data-table">
+                        <thead><tr><th>Date</th><th>Désignation</th><th>Qté</th><th>Prix Global</th><th>Actions</th></tr></thead>
+                        <tbody id="ventes-service-list"></tbody>
+                    </table>
+                </div>
+
+                <div id="tab-content-depense" class="tab-content">
+                    <form id="form-depense">
+                        <div class="form-group"><label for="depense-date">Date</label><input type="date" id="depense-date" required></div>
+                        <div class="form-group"><label for="depense-motif">Motif</label><input type="text" id="depense-motif" placeholder="Loyer, salaire, etc." required></div>
+                        <div class="form-group"><label for="depense-montant">Montant</label><input type="number" id="depense-montant" placeholder="Montant (FCFA)" step="1" min="0" required></div>
+                        <button type="submit">Ajouter</button>
+                    </form>
+                    <h3>Historique des dépenses</h3>
+                    <table class="data-table">
+                        <thead><tr><th>Date</th><th>Motif</th><th>Montant</th><th>Actions</th></tr></thead>
+                        <tbody id="depenses-list"></tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <!-- PAGE : BILANS ET RAPPORTS -->
+            <section id="bilans-page" class="page">
+                <h1>Bilans et Rapports</h1>
+                <form id="form-bilan">
+                    <div class="form-group"><label for="bilan-periode">Période</label><select id="bilan-periode"><option value="jour">Journalier</option><option value="semaine">Hebdomadaire</option><option value="mois">Mensuel</option><option value="annee">Annuel</option></select></div>
+                    <div class="form-group"><label for="bilan-date-specifique">Date de référence</label><input type="date" id="bilan-date-specifique" value=""></div>
+                    <button type="button" id="generer-bilan">Générer le Bilan</button>
+                </form>
+                <hr>
+                <div id="bilan-resultat" class="bilan-container"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL DE MODIFICATION (Inchangé) -->
+    <div id="edit-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="modal-title">Modifier</h2>
+            <form id="modal-form"></form>
+            <div class="modal-actions">
+                <button id="modal-cancel" class="btn-secondary">Annuler</button>
+                <button id="modal-save">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
