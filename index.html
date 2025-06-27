@@ -4,34 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LOUIS ROSAIRE GESTION COMMERCIALE</title>
-    <!-- Favicon de l'application -->
     <link rel="icon" href="LOUIS ROSAIRE.jpg" type="image/jpeg">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
 
-    <!-- APPLICATION PRINCIPALE -->
-    <div id="app-container" class="page-container active">
+    <!-- ÉCRAN DE CONNEXION -->
+    <div id="login-container" class="active">
+        <div class="login-box">
+            <img src="LOUIS ROSAIRE.jpg" alt="Logo" class="login-logo">
+            <h2>Connexion</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-username">Nom d'utilisateur</label>
+                    <input type="text" id="login-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Mot de passe</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit">Se connecter</button>
+                <p id="login-error" class="error-message"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- APPLICATION PRINCIPALE (cachée par défaut) -->
+    <div id="app-container" class="page-container">
         <aside class="sidebar">
             <div class="sidebar-header">
                 <img src="LOUIS ROSAIRE.jpg" alt="Logo Louis Rosaire" class="sidebar-logo">
             </div>
             <nav>
                 <ul>
-                    <li><a href="#" class="nav-link active" data-page="dashboard">📊 Tableau de bord</a></li>
+                    <li><a href="#" class="nav-link active" data-page="ventes">💰 Ventes & Dépenses</a></li>
                     <li><a href="#" class="nav-link" data-page="achats">🛒 Gestion des Achats</a></li>
                     <li><a href="#" class="nav-link" data-page="stock">📦 Gestion du Stock</a></li>
-                    <li><a href="#" class="nav-link" data-page="ventes">💰 Ventes & Dépenses</a></li>
+                    <li><a href="#" class="nav-link" data-page="dashboard">📊 Tableau de bord</a></li>
                     <li><a href="#" class="nav-link" data-page="bilans">📈 Bilans et Rapports</a></li>
+                    <li><a href="#" class="nav-link" data-page="admin">⚙️ Administration</a></li>
                 </ul>
             </nav>
-            <div class="sidebar-footer"><p>© 2025 LOUIS ROSAIRE</p></div>
+            <div id="sidebar-footer" class="sidebar-footer">
+                <p id="footer-user-info"></p>
+                <a href="#" id="logout-btn">Déconnexion</a>
+                <p>© 2025 LOUIS ROSAIRE</p>
+            </div>
         </aside>
 
         <main class="content">
             <!-- PAGE : TABLEAU DE BORD -->
-            <section id="dashboard-page" class="page active">
+            <section id="dashboard-page" class="page">
                 <h1>Tableau de bord</h1>
                 <div class="kpi-container">
                     <div class="kpi-card"><h3>Chiffre d'Affaires (Aujourd'hui)</h3><p id="kpi-ca-jour">0 FCFA</p></div>
@@ -48,7 +74,7 @@
                     <div class="form-group"><label for="achat-date">Date</label><input type="date" id="achat-date" required></div>
                     <div class="form-group"><label for="achat-designation">Désignation</label><input type="text" id="achat-designation" placeholder="Nom du produit" required></div>
                     <div class="form-group"><label for="achat-quantite">Quantité</label><input type="number" id="achat-quantite" placeholder="Qté" min="1" required></div>
-                    <div class="form-group"><label for="achat-cout">Coût Unitaire</label><input type="number" id="achat-cout" placeholder="Coût (FCFA)" step="1" min="0" required></div>
+                    <div class="form-group"><label for="achat-cout">Coût d'achat</label><input type="number" id="achat-cout" placeholder="Coût (FCFA)" step="1" min="0" required></div>
                     <div class="form-group"><label for="achat-prix-detail">Prix Vente Détail</label><input type="number" id="achat-prix-detail" placeholder="Prix détail (FCFA)" step="1" min="0" required></div>
                     <div class="form-group"><label for="achat-prix-gros">Prix Vente Gros</label><input type="number" id="achat-prix-gros" placeholder="Prix gros (FCFA)" step="1" min="0" required></div>
                     <button type="submit">Ajouter l'Achat</button>
@@ -56,7 +82,7 @@
                 <hr>
                 <h2>Liste des Achats</h2>
                 <table class="data-table">
-                    <thead><tr><th>Date</th><th>Désignation</th><th>Qté</th><th>Coût U.</th><th>Coût Total</th><th>Actions</th></tr></thead>
+                    <thead><tr><th>Date</th><th>Désignation</th><th>Qté</th><th>Coût Achat</th><th>Total Achat</th><th>Actions</th></tr></thead>
                     <tbody id="achats-list"></tbody>
                 </table>
             </section>
@@ -96,7 +122,7 @@
             </section>
 
             <!-- PAGE : VENTES & DÉPENSES -->
-            <section id="ventes-page" class="page">
+            <section id="ventes-page" class="page active">
                 <h1>Gestion des Ventes & Dépenses</h1>
                 <nav class="tab-nav">
                     <button class="tab-btn active" data-tab="vente-stock">Vente de Produits</button>
@@ -159,12 +185,50 @@
                     <button type="button" id="generer-bilan">Générer le Bilan</button>
                 </form>
                 <hr>
-                <div id="bilan-resultat" class="bilan-container"></div>
+                <nav class="tab-nav">
+                    <button class="tab-btn active" data-tab="bilan-synthese">Synthèse du Bilan</button>
+                    <button class="tab-btn" data-tab="bilan-ventes">Historique Ventes</button>
+                    <button class="tab-btn" data-tab="bilan-depenses">Historique Dépenses</button>
+                </nav>
+                <div id="tab-content-bilan-synthese" class="tab-content active bilan-container">
+                    <!-- Le contenu de la synthèse sera injecté ici -->
+                </div>
+                <div id="tab-content-bilan-ventes" class="tab-content bilan-container">
+                     <!-- L'historique des ventes sera injecté ici -->
+                </div>
+                <div id="tab-content-bilan-depenses" class="tab-content bilan-container">
+                    <!-- L'historique des dépenses sera injecté ici -->
+                </div>
+            </section>
+
+            <!-- PAGE : ADMINISTRATION -->
+            <section id="admin-page" class="page">
+                <h1>Administration</h1>
+                <h2>Ajouter un nouvel utilisateur</h2>
+                <form id="form-admin-user">
+                    <div class="form-group"><label for="admin-username">Nom d'utilisateur</label><input type="text" id="admin-username" required></div>
+                    <div class="form-group"><label for="admin-password">Mot de passe</label><input type="password" id="admin-password" required></div>
+                    <div class="form-group">
+                        <label for="admin-access-level">Niveau d'accès</label>
+                        <select id="admin-access-level" required>
+                            <option value="Admin">Admin</option>
+                            <option value="Editeur">Editeur</option>
+                            <option value="Lecteur">Lecteur</option>
+                        </select>
+                    </div>
+                    <button type="submit">Ajouter l'utilisateur</button>
+                </form>
+                <hr>
+                <h2>Liste des Utilisateurs</h2>
+                <table class="data-table">
+                    <thead><tr><th>Nom d'utilisateur</th><th>Niveau d'accès</th><th>Actions</th></tr></thead>
+                    <tbody id="users-list"></tbody>
+                </table>
             </section>
         </main>
     </div>
 
-    <!-- MODAL DE MODIFICATION (Inchangé) -->
+    <!-- MODAL DE MODIFICATION -->
     <div id="edit-modal" class="modal-overlay">
         <div class="modal-content">
             <h2 id="modal-title">Modifier</h2>
